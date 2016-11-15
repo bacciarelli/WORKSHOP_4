@@ -11,7 +11,7 @@ $twitterArraysSQL = ["create table Admins(
 ,
     "create table Users(
                         id int AUTO_INCREMENT NOT NULL,
-                        user_name varchar(140) NOT NULL,
+                        first_name varchar(140) NOT NULL,
                         last_name varchar(140) NOT NULL,
                         email varchar(255) NOT NULL UNIQUE,
                         hashed_password varchar(60) NOT NULL,
