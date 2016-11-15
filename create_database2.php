@@ -4,37 +4,30 @@ require_once("connection.php");
 $twitterArraysSQL = array(
     "create table Admins(
                         id int AUTO_INCREMENT NOT NULL,
-                        
-                        name varchar(25) NOT NULL UNIQUE,
-
+                        admin_name varchar(25) NOT NULL UNIQUE,
                         email varchar(255) NOT NULL UNIQUE,
-                        password varchar(60) NOT NULL,
+                        hashed_password varchar(60) NOT NULL,
                         PRIMARY KEY(id))
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Users(
                         id int AUTO_INCREMENT NOT NULL,
-                        name varchar(140) NOT NULL,
-                        surname varchar(140) NOT NULL,                        
+                        user_name varchar(140) NOT NULL,
+                        last_name varchar(140) NOT NULL,
                         email varchar(255) NOT NULL UNIQUE,
-                        password varchar(60) NOT NULL,
+                        hashed_password varchar(60) NOT NULL,
                         address varchar(255) NOT NULL,
                         PRIMARY KEY(id))                        
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Messages(
                         id int AUTO_INCREMENT NOT NULL,
-                        
-                        admin_id int NOT NULL, /w poleceniu nie ma nic o nadawcy
-                        
-                        order_id int NOT NULL, /raczej: user_id
-                        
+                        admin_id int NOT NULL,
+                        user_id int NOT NULL,                     
                         message_text_id int NOT NULL,
                         PRIMARY KEY(id),
                         FOREIGN KEY(admin_id) REFERENCES Admins(id),
-                        
-                        FOREIGN KEY(order_id) REFERENCES Orders(id), /odwołanie do Users(id)
-                        
+                        FOREIGN KEY(user_id) REFERENCES Users(id),
                         FOREIGN KEY(message_text_id) REFERENCES Messages_text(id))
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
@@ -52,13 +45,11 @@ $twitterArraysSQL = array(
 ,
     "create table Items(
                         id int AUTO_INCREMENT NOT NULL,
-                        name varchar(255) NOT NULL UNIQUE,
+                        item_name varchar(255) NOT NULL UNIQUE,
                         description varchar(255) NOT NULL,
                         price decimal(8, 2) NOT NULL,
-                        
                         stock_quantity int NOT NULL,
-                        group varchar(25),
-                       
+                        group varchar(100),
                         PRIMARY KEY(id))
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
@@ -73,12 +64,8 @@ $twitterArraysSQL = array(
     "create table Items_Orders(
                         id int AUTO_INCREMENT NOT NULL,
                         item_id int NOT NULL,
-                        order_id int NOT NULL,
-                        
-                        status ???
-                        
-                        quantity int NOT NULL, /ilość raczej w tabeli pośredniej?
-                        
+                        order_id int NOT NULL,                  
+                        quantity int NOT NULL, 
                         PRIMARY KEY(id),
                         FOREIGN KEY(item_id) REFERENCES Items(id),
                         FOREIGN KEY(order_id) REFERENCES Orders(id))
