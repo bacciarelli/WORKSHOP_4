@@ -89,6 +89,11 @@ class Item {
     }
 
     //public methods
+    
+//    public function getPriceForQuantity($quantity) {
+//        return $this->price * $quantity;
+//    }
+    
     public function saveToDB(mysqli $connection) {
         if ($this->id == -1) {
             $statement = $connection->prepare
@@ -180,6 +185,7 @@ class Item {
     
 //    public function loadAllItems() {
 //        
-//    }
+//   }
+    
 
 }
