@@ -1,8 +1,7 @@
 <?php
-require_once("User.php");
-require_once("Tweet.php");
-require_once("Comment.php");
-require_once("Message.php");
+require_once("src/User.php");
+//tutaj analogicznie dajemy require_once('Klasa.php')
+
 
 $configDB = array(
     'servername' => "localhost",
@@ -21,7 +20,5 @@ if ($conn->connect_error) {
 
 //setting connections for Models
 User::SetConnection($conn);
-Tweet::SetConnection($conn);
-Comment::SetConnection($conn);
-Message::SetConnection($conn);
+//tutaj analogicznie dajemy Klasa::SetConnection($conn);
 ?>
