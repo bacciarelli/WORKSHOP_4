@@ -1,5 +1,5 @@
 <?php
-include_once '../connection.php';
+include_once '../config/connection.php';
 class User {
 
     static private $conn;
@@ -108,6 +108,71 @@ class User {
                 return TRUE;
             }
             return FALSE;
+        }
+    }
+    
+    static public function loadUserById($userId) {
+        $sql = "SELECT * FROM Users WHERE id = $userId";
+        $result = self::$conn->query($sql);
+
+        if ($result != FALSE && $result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+
+            $loadedUser = new User();
+            $loadedUser->id = $row['id'];
+            $loadedUser->firstName = $row['first_name'];
+            $loadedUser->lastName = $row['last_name'];
+            $loadedUser->email = $row['email'];
+            $loadedUser->hashedPassword = $row['hashed_password'];
+            $loadedUser->address = $row['address'];
+
+            return $loadedUser;
+        } else {
+            return null;
+        }
+    }
+    
+    static public function loadUserByEmail($userEmail) {
+        $sql = "SELECT * FROM Users WHERE email = $userEmail";
+        $result = self::$conn->query($sql);
+
+        if ($result != FALSE && $result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+
+            $loadedUser = new User();
+            $loadedUser->id = $row['id'];
+            $loadedUser->firstName = $row['first_name'];
+            $loadedUser->lastName = $row['last_name'];
+            $loadedUser->email = $row['email'];
+            $loadedUser->hashedPassword = $row['hashed_password'];
+            $loadedUser->address = $row['address'];
+
+            return $loadedUser;
+        } else {
+            return null;
+        }
+    }
+    
+    public function loadAllUsersMessages() {
+        $userId = $_SESSION['id'];
+        $sql = "SELECT * FROM Messages WHERE user_id = $userId ORDER BY creation_date DESC";
+        $result = self::$conn->query($sql);
+        $ret = [];
+
+        if ($result != false && $result->num_rows != 0) {
+            foreach ($result as $row) {
+                $loadedMessage = new Tweet();
+                $loadedMessage->id = $row['id'];
+                $loadedMessage->adminId = $row['admin_id'];
+                $loadedMessage->userId = $row['user_id'];
+                $loadedMessage->messageTextId = $row['message_text_id'];
+                $loadedMessage->creationDate = $row['creation_date'];
+
+                $ret[] = $loadedMessage;
+                return $ret;
+            }
+        } else {
+            return null;
         }
     }
     

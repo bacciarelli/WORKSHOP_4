@@ -22,18 +22,12 @@ $twitterArraysSQL = ["create table Admins(
     "create table Messages(
                         id int AUTO_INCREMENT NOT NULL,
                         admin_id int NOT NULL,
-                        user_id int NOT NULL,                     
-                        message_text_id int NOT NULL,
+                        user_id int NOT NULL,
+                        message_text text NOT NULL,
+                        creation_date DATETIME NOT NULL,
                         PRIMARY KEY(id),
                         FOREIGN KEY(admin_id) REFERENCES Admins(id),
-                        FOREIGN KEY(user_id) REFERENCES Users(id),
-                        FOREIGN KEY(message_text_id) REFERENCES Messages_text(id))
-     ENGINE=InnoDB, CHARACTER SET=utf8"
-,
-    "create table Messages_text(
-                        id int AUTO_INCREMENT NOT NULL,
-                        text varchar(255) NOT NULL,
-                        PRIMARY KEY(id))
+                        FOREIGN KEY(user_id) REFERENCES Users(id)
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Status(
