@@ -1,5 +1,5 @@
 <?php
-include_once './connection.php';
+include_once './config/connection.php';
 class Admin {
 
     static private $conn;
@@ -107,7 +107,8 @@ class Admin {
     }
     
     static public function loadAdminByEmail($adminEmail) {
-        $sql = "SELECT * FROM Admins WHERE id = $adminEmail";
+        $safeadminEmail = self::$conn->real_escape_string($adminEmail);
+        $sql = "SELECT * FROM Admins WHERE id = $safeadminEmail";
         $result = self::$conn->query($sql);
 
         if ($result != FALSE && $result->num_rows == 1) {

@@ -1,5 +1,5 @@
 <?php
-include_once '../config/connection.php';
+include_once './config/connection.php';
 class User {
 
     static private $conn;
@@ -133,7 +133,8 @@ class User {
     }
     
     static public function loadUserByEmail($userEmail) {
-        $sql = "SELECT * FROM Users WHERE email = $userEmail";
+        $safeUserEmail = self::$conn->real_escape_string($userEmail);
+        $sql = "SELECT * FROM Users WHERE email = $safeUserEmail";
         $result = self::$conn->query($sql);
 
         if ($result != FALSE && $result->num_rows == 1) {

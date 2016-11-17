@@ -23,6 +23,16 @@
 session_start();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
+    
+    $pattern = '/^[_a-zA-Z0-9-]+(\.[_a-zA-Z0-9-]+)*@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]{1,})*\.([a-zA-Z]{2,}){1}$/';
+    if (preg_match($pattern, $_POST['email']) == 0) {
+        echo 'Podano niepoprawny e-mail!';
+    } else {
+        
+    }
+    
+    
+    
     $email = $_POST['email'];
     $userName = $_POST['userName'];
     $password = $_POST['password'];

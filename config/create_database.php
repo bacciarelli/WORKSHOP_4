@@ -27,7 +27,7 @@ $twitterArraysSQL = ["create table Admins(
                         creation_date DATETIME NOT NULL,
                         PRIMARY KEY(id),
                         FOREIGN KEY(admin_id) REFERENCES Admins(id),
-                        FOREIGN KEY(user_id) REFERENCES Users(id)
+                        FOREIGN KEY(user_id) REFERENCES Users(id))
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Status(
