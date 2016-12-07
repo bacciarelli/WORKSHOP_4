@@ -19,13 +19,18 @@
   FOREIGN KEY(status_id) REFERENCES Status(id))
  */
 
+include_once './config/connection.php';
 include_once 'Item.php';
-include_once 'Cart.php';
 
-class Order extends Cart {
+class Order {
 
+    static private $conn;
     private $id;
     private $status;
+
+    static public function SetConnection($conn) {
+        self::$conn = $conn;
+    }
 
     public function __construct() {
         $this->id = -1;
@@ -59,7 +64,7 @@ class Order extends Cart {
             }
         }
     }
-    
+
     public function loadOrdersByUserId(mysqli $connection, $userId) {
         $safeUserId = $connection->real_escape_string($userId);
         $sql = "SELECT * FROM Orders
@@ -138,9 +143,8 @@ class Order extends Cart {
 
         $sql = "INSERT INTO Items_Orders (item_id, order_id, quantity)
                                     VALUES ($itemId, $orderId, 1)";
-        
-        if ($this->loadOrderByOrderId($connection, $orderId) != false 
-                && $this->getStatus() == "oczekujace") {
+
+        if ($this->loadOrderByOrderId($connection, $orderId) != false && $this->getStatus() == "oczekujace") {
             $result = $connection->query($sql);
             if ($result != false) {
                 return true;

@@ -1,5 +1,7 @@
 <?php
 require_once("./src/User.php");
+require_once("./src/Item.php");
+require_once("./src/Order.php");
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
@@ -21,4 +23,6 @@ if ($conn->connect_error) {
 //setting connections for Models
 User::SetConnection($conn);
 //tutaj analogicznie dajemy Klasa::SetConnection($conn);
+Item::SetConnection($conn);
+Order::SetConnection($conn);
 ?>

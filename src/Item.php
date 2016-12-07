@@ -19,9 +19,12 @@
   FOREIGN KEY(item_id) REFERENCES Items(id)
   );
  */
+include_once './config/connection.php';
 
 class Item {
 
+    static private $conn;
+    
     private $id;
     private $name;
     private $description;
@@ -29,6 +32,10 @@ class Item {
     private $stockQuantity;
     private $group;
 
+    static public function SetConnection($conn) {
+        self::$conn = $conn;
+    }
+    
     public function __construct() {
         $this->id = -1;
         $this->name = "";
@@ -89,11 +96,10 @@ class Item {
     }
 
     //public methods
-    
 //    public function getPriceForQuantity($quantity) {
 //        return $this->price * $quantity;
 //    }
-    
+
     public function saveToDB(mysqli $connection) {
         if ($this->id == -1) {
             $statement = $connection->prepare
@@ -177,15 +183,13 @@ class Item {
             $loadedItem->price = $row['price'];
             $loadedItem->stockQuantity = $row['stock_quantity'];
             $loadedItem->group = $row['group'];
-            
+
             return $loadedItem;
         }
         return null;
     }
-    
+
 //    public function loadAllItems() {
 //        
 //   }
-    
-
 }
