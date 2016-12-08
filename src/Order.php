@@ -1,5 +1,4 @@
 <?php
-
 /*
   CREATE TABLE Items_Orders(
   id int AUTO_INCREMENT NOT NULL,
@@ -19,7 +18,7 @@
   FOREIGN KEY(status_id) REFERENCES Status(id))
  */
 
-include_once './config/connection.php';
+include_once '../config/connection.php';
 include_once 'Item.php';
 
 class Order {

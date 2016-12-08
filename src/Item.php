@@ -1,5 +1,4 @@
 <?php
-
 /*
   CREATE TABLE Items(
   id int AUTO_INCREMENT NOT NULL,
@@ -19,7 +18,7 @@
   FOREIGN KEY(item_id) REFERENCES Items(id)
   );
  */
-include_once './config/connection.php';
+include_once '../config/connection.php';
 
 class Item {
 

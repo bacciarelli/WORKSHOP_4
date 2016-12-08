@@ -1,13 +1,13 @@
 <?php
-require_once("./src/User.php");
-require_once("./src/Item.php");
-require_once("./src/Order.php");
+require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/User.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/Item.php";
+require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/Order.php";
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
 $configDB = array(
     'servername' => "localhost",
-    'username' => "internet_shop",
+    'username' => "root",
     'password' => "coderslab",
     'baseName' => "internet_shop_db"
 );
@@ -18,7 +18,6 @@ $conn = new mysqli($configDB['servername'], $configDB['username'], $configDB['pa
 if ($conn->connect_error) {
     die("Polaczenie nieudane. Blad: " . $conn->connect_error."<br>");
 }
-
 
 //setting connections for Models
 User::SetConnection($conn);

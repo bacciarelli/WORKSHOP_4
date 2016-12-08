@@ -1,9 +1,10 @@
 <?php
-include_once './config/connection.php';
+
+//require_once $_SERVER['DOCUMENT_ROOT'] . 'WORKSHOP_4/config/connection.php';
+
 class User {
 
     static private $conn;
-    
     private $id;
     private $firstName;
     private $lastName;
@@ -14,7 +15,7 @@ class User {
     static public function SetConnection($conn) {
         self::$conn = $conn;
     }
-    
+
     public function __construct() {
         $this->id = -1;
         $this->firstName = "";
@@ -23,9 +24,9 @@ class User {
         $this->hashedPassword = "";
         $this->address = "";
     }
-    
+
     //getery:
-    
+
     function getId() {
         return $this->id;
     }
@@ -77,7 +78,7 @@ class User {
         $this->address = $address;
         return $this;
     }
-    
+
     //metody:
 
     public function saveUserToDB() {
@@ -110,7 +111,39 @@ class User {
             return FALSE;
         }
     }
+
+    /**
+     * 
+     * @param type $email
+     * @return boolean
+     * return false when e-mail is already taken
+     * return true when e-mail is available
+     */
+    static public function checkEmail($email) {
+        $email = self::$conn->real_escape_string($email);
+        $sql = "SELECT * FROM Users WHERE email='$email'";
+        $result = self::$conn->query($sql);
+        if ($result->num_rows == true) {
+            return false;
+        } else {
+            return true;
+        }  
+    }
     
+    static public function registerNewUser($address, $email, $firstName, $lastName, $password) {
+                $newUser = new User();
+                $newUser->address = $address;
+                $newUser->email = $email;
+                $newUser->firstName = $firstName;
+                $newUser->lastName = $lastName;
+                $newUser->setHashedPassword($password);
+                if ($newUser->saveUserToDB() == true) {
+                    return true;
+                } else {
+                    return false;
+                }
+    }
+
     static public function loadUserById($userId) {
         $sql = "SELECT * FROM Users WHERE id = $userId";
         $result = self::$conn->query($sql);
@@ -131,10 +164,10 @@ class User {
             return null;
         }
     }
-    
+
     static public function loadUserByEmail($userEmail) {
         $safeUserEmail = self::$conn->real_escape_string($userEmail);
-        $sql = "SELECT * FROM Users WHERE email = $safeUserEmail";
+        $sql = "SELECT * FROM Users WHERE email = '$safeUserEmail'";
         $result = self::$conn->query($sql);
 
         if ($result != FALSE && $result->num_rows == 1) {
@@ -154,6 +187,7 @@ class User {
         }
     }
     
+
     public function loadAllUsersMessages() {
         $userId = $_SESSION['id'];
         $sql = "SELECT * FROM Messages WHERE user_id = $userId ORDER BY creation_date DESC";
@@ -176,12 +210,12 @@ class User {
             return null;
         }
     }
-    
+
     public function deleteUser() {
         if ($this->id == -1) {
-           return true; 
+            return true;
         }
-        
+
         $sql = "DELETE FROM Users WHERE id = $this->id";
         $result = self::$conn->query($sql);
         if ($result) {
