@@ -1,7 +1,7 @@
 <?php
-require_once("./src/User.php");
-require_once("./src/Item.php");
-require_once("./src/Order.php");
+use src\User;
+use src\Order;
+use src\Item;
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
