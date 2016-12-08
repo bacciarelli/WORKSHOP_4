@@ -1,29 +1,29 @@
 <?php
+
 /*
 
-    "create table Items_Orders(
-                        id int AUTO_INCREMENT NOT NULL,
-                        item_id int NOT NULL,
-                        order_id int NOT NULL,                  
-                        quantity int NOT NULL, 
-                        PRIMARY KEY(id),
-                        FOREIGN KEY(item_id) REFERENCES Items(id),
-                        FOREIGN KEY(order_id) REFERENCES Orders(id))
-     ENGINE=InnoDB, CHARACTER SET=utf8"
-,
-    "create table Orders(
-                        id int AUTO_INCREMENT NOT NULL,
-                        user_id int NOT NULL,
-                        status_id int NOT NULL,
-                        PRIMARY KEY(id),
-                        FOREIGN KEY(user_id) REFERENCES Users(id),
-                        FOREIGN KEY(status_id) REFERENCES Status(id))
-     ENGINE=InnoDB, CHARACTER SET=utf8"];
+  "create table Items_Orders(
+  id int AUTO_INCREMENT NOT NULL,
+  item_id int NOT NULL,
+  order_id int NOT NULL,
+  quantity int NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(item_id) REFERENCES Items(id),
+  FOREIGN KEY(order_id) REFERENCES Orders(id))
+  ENGINE=InnoDB, CHARACTER SET=utf8"
+  ,
+  "create table Orders(
+  id int AUTO_INCREMENT NOT NULL,
+  user_id int NOT NULL,
+  status_id int NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(user_id) REFERENCES Users(id),
+  FOREIGN KEY(status_id) REFERENCES Status(id))
+  ENGINE=InnoDB, CHARACTER SET=utf8"];
  */
 
-include_once '../config/connection.php';
+include_once 'connection.php';
 include_once 'Item.php';
-
 
 class Order {
 
@@ -74,6 +74,20 @@ class Order {
                                     JOIN Items_Orders ON Orders.id=Items_Orders.order_id
                                     JOIN Items ON Items.id = Items_Orders.item_id
                                     WHERE user_id = $safeUserId";
+        $result = self::$conn->query($sql);
+
+        $ret = [];
+
+        if ($result != false && $result->num_rows > 0) {
+            foreach ($result as $row) {
+                $loadedOrder = new Order();
+                $loadedOrder->id = $row['id'];
+                $loadedOrder->status = $row['status_id'];
+
+                $ret[$loadedOrder->id] = $loadedOrder;
+            }
+        }
+        return $ret;
     }
 
     public function loadOrderByOrderId($orderId) {
@@ -95,7 +109,7 @@ class Order {
         return false;
     }
 
-    //implementing abstract methods of Cart()
+//implementing abstract methods of Cart()
     public function getCartQuantity($itemId) {
         $sql = "SELECT quantity FROM Items_Orders WHERE item_id=$itemId";
         $result = self::$conn->query($sql);

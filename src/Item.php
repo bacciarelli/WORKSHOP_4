@@ -16,15 +16,16 @@
   description varchar(255) NOT NULL,
   price decimal(8, 2) NOT NULL,
   stock_quantity int NOT NULL,
-  group_name varchar(100) NOT NULL,
-  PRIMARY KEY(id))
+  category_id varchar(100) NOT NULL,
+  PRIMARY KEY(id)),
+  FOREIGN KEY(category_id) REFERENCES Categories (id)
  */
 
-include_once '../config/connection.php';
+include_once 'connection.php';
 
 class Item {
 
-    private $conn;
+    static private $conn;
     private $id;
     private $itemName;
     private $description;

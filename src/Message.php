@@ -1,6 +1,6 @@
 <?php
-namespace WORKSHOP_4\src;
-include_once '../config/connection.php';
+
+include_once 'connection.php';
 
 class Message {
 

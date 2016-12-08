@@ -1,5 +1,5 @@
 <?php
-require_once("connection.php");
+require_once("../src/connection.php");
 
 $twitterArraysSQL = ["create table Admins(
                         id int AUTO_INCREMENT NOT NULL,
@@ -42,8 +42,9 @@ $twitterArraysSQL = ["create table Admins(
                         description varchar(255) NOT NULL,
                         price decimal(8, 2) NOT NULL,
                         stock_quantity int NOT NULL,
-                        group_name varchar(100) NOT NULL,
-                        PRIMARY KEY(id))
+                        category_id int NOT NULL,
+                        PRIMARY KEY(id),
+                        FOREIGN KEY(category_id) REFERENCES Categories (id))
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Images(
@@ -71,7 +72,14 @@ $twitterArraysSQL = ["create table Admins(
                         PRIMARY KEY(id),
                         FOREIGN KEY(user_id) REFERENCES Users(id),
                         FOREIGN KEY(status_id) REFERENCES Status(id))
-     ENGINE=InnoDB, CHARACTER SET=utf8"];
+     ENGINE=InnoDB, CHARACTER SET=utf8"
+    ,
+    "create table Categories(
+                        id int AUTO_INCREMENT NOT NULL,
+                        text varchar(60) NOT NULL,
+                        PRIMARY KEY(id))
+     ENGINE=InnoDB, CHARACTER SET=utf8"
+    ];
 
 foreach($twitterArraysSQL as $query){
     $result = $conn->query($query);

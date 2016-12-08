@@ -1,6 +1,6 @@
 <?php
 
-//require_once $_SERVER['DOCUMENT_ROOT'] . 'WORKSHOP_4/config/connection.php';
+require_once 'connection.php';
 
 class User {
 

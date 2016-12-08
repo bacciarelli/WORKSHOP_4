@@ -1,5 +1,5 @@
 <?php
-include_once __DIR__ . 'WORKSHOP_4/config/connection.php';
+include_once 'connection.php';
 class Admin {
 
     static private $conn;

@@ -1,8 +1,8 @@
 <?php
 session_start();
-//use WORKSHOP_4\src\User;
+
 require_once './src/User.php';
-//require_once './src/Admin.php';
+require_once './src/Admin.php';
 ?>
 
 <!DOCTYPE html>

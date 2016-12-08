@@ -1,8 +1,8 @@
 <?php
 
-require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/User.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/Item.php";
-require_once $_SERVER['DOCUMENT_ROOT'] . "WORKSHOP_4/src/Order.php";
+require_once "User.php";
+require_once "Item.php";
+require_once "Order.php";
 
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
@@ -18,7 +18,7 @@ $configDB = array(
 $conn = new mysqli($configDB['servername'], $configDB['username'], $configDB['password'], $configDB['baseName']);
 // Sprawdzamy czy połączcenie się udało
 if ($conn->connect_error) {
-    die("Polaczenie nieudane. Blad: " . $conn->connect_error."<br>");
+    die("Polaczenie nieudane. Blad: " . $conn->connect_error . "<br>");
 }
 
 //setting connections for Models
