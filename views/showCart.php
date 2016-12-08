@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
     if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
         $cartContent = Cart::displayCart($_SESSION['cart']);
-        $form = '<form action="" method="POST">
+        $form = '<form action="createOrder.php" method="POST">
                                                 <input type="submit" value="Potwierdź zamówienie">
                                          </form>';
     } else {
@@ -56,26 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     $endpoint = "mainPage.php";
 }
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
-        $cartContent = Cart::displayCart($_SESSION['cart']);
-    } else {
-        echo "Twój koszyk jest pusty!";
-    }
-    $endpoint = "mainPage.php";
 
-    $newOrder = new Order($_SESSION['userId']);
-    $newOrder->saveToDB();
-    $orderId = $newOrder->getId();
-
-    foreach ($_SESSION['cart'] as $itemId => $quantity) {
-        Cart::addToCart($itemId, $orderId, $quantity);
-    }
-
-    $_SESSION['cart'] = [];
-    $_SESSION['item_value'] = 0;
-    $_SESSION['total_price'] = 0;
-}
 
 //var_dump($_SESSION);
 //var_dump($_SESSION['cart']);
