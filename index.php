@@ -13,8 +13,24 @@ require_once './src/Admin.php';
     <title>Candy Shop</title>
 </head>
 <body>
-
+    Karuzela!!:)
     <?php
+    
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        if (trim($_POST['email']) == '' && trim($_POST['password']) == '') {
+            echo 'Proszę wprowadzić dane użytkownika.';
+        } else {
+            if (User::loginUser($_POST['email'], $_POST['password']) == false) {
+                print 'Nie poprawne dane użytkownika';
+            } else {
+                $user = User::loginUser($_POST['email'], $_POST['password']);
+                $_SESSION['login'] = true;
+                $_SESSION['user_id'] = $user->getId();
+                print "Witaj " . $user->getFirstName();
+            }
+        }
+    }
+    
     if (!isset($_SESSION['login']) || $_SESSION['login'] == false) {
         ?>
         <form action="" method="POST">
@@ -27,29 +43,9 @@ require_once './src/Admin.php';
         <p><a href="./views/register.php">Zarejestruj się</a></p>
         <?php
     } else {
-        echo '<a href="./src/logout.php">Wyloguj się</a><br><br>';
+        echo '<a href="./views/logout.php">Wyloguj się</a><br><br>';
     }
 
-    if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        if (trim($_POST['email']) == '' && trim($_POST['password']) == '') {
-            echo 'Proszę wprowadzić dane użytkownika.';
-        } else {
-            $email = $conn->real_escape_string($_POST['email']);
-            $password = $conn->real_escape_string($_POST['password']);
-            $loadedUser = User::loadUserByEmail($email);
-            if ($loadedUser === null) {
-                echo 'Użytkownik o podanym e-mailu nie istnieje.';
-            } else {
-                $hashedPassword = $loadedUser->getHashedPassword();
-                if (password_verify($password, $hashedPassword) === false) {
-                    echo 'Niepoprawne hasło.';
-                } else {
-                    $_SESSION['login'] = true;
-                    $_SESSION['user_id'] = $loadedUser->getId();
-                }
-            }
-        }
-    }
     ?>
 
 
