@@ -31,7 +31,7 @@ $categories = Category::loadAllCategories();
             ?>
         </div>
         <hr/>
-        <div>
+        <div class="items">
             <table>
 
 <?php
@@ -43,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         
         foreach ($items as $item) {
             echo "<tr>";
-            echo "<td>" . $item->getItemName() . "</td>";
+            echo "<td><a href='showItem.php?item_id=" . $item->getId() . "'>" 
+            . $item->getItemName() . "</a></td>";
             echo "<td>" . $item->getDescription() . "</td>";
-            echo "<td>" . $item->getPrice() . "</td>";
+            echo "<td>" . $item->getPrice() . " zł</td>";
             echo "</tr>";
         }
     }
