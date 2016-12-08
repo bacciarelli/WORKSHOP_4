@@ -1,6 +1,7 @@
 <?php
 session_start();
 require_once '../src/User.php';
+require_once '../src/Order.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,6 +15,7 @@ require_once '../src/User.php';
     
     <?php
     if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['userId'])) {
+        Order::loadOrdersByUserId($_GET['userId']);
         User::loadUserById($_GET['userId'])->deleteUser();
     }
     if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {

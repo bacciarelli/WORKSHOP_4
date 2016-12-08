@@ -68,7 +68,7 @@ class Order {
         }
     }
 
-    public function loadOrdersByUserId($userId) {
+    static public function loadOrdersByUserId($userId) {
         $safeUserId = self::$conn->real_escape_string($userId);
         $sql = "SELECT * FROM Orders
                                     JOIN Items_Orders ON Orders.id=Items_Orders.order_id
