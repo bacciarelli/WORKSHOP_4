@@ -137,7 +137,7 @@ class User {
 
     static public function loginUser($email, $password) {
         if (User::checkEmail($email) != null &&
-            password_verify($password, User::loadUserByEmail($email)->hashedPassword) == true) {
+                password_verify($password, User::loadUserByEmail($email)->hashedPassword) == true) {
             return User::loadUserByEmail($email);
         } else {
             return false;
@@ -201,15 +201,37 @@ class User {
         }
     }
 
-    public function loadAllUsersMessages() {
-        $userId = $_SESSION['id'];
+    static public function loadAllUsers() {
+        $sql = "SELECT * FROM Users ORDER BY email DESC";
+        $result = self::$conn->query($sql);
+        $ret = [];
+
+        if ($result != false && $result->num_rows != 0) {
+            foreach ($result as $row) {
+                $loadedUser = new User();
+                $loadedUser->id = $row['id'];
+                $loadedUser->firstName = $row['first_name'];
+                $loadedUser->lastName = $row['last_name'];
+                $loadedUser->email = $row['email'];
+                $loadedUser->hashedPassword = $row['hashed_password'];
+                $loadedUser->address = $row['address'];
+
+                $ret[] = $loadedUser;
+            }
+            return $ret;
+        } else {
+            return null;
+        }
+    }
+
+    public function loadAllUserMessages($userId) {
         $sql = "SELECT * FROM Messages WHERE user_id = $userId ORDER BY creation_date DESC";
         $result = self::$conn->query($sql);
         $ret = [];
 
         if ($result != false && $result->num_rows != 0) {
             foreach ($result as $row) {
-                $loadedMessage = new Tweet();
+                $loadedMessage = new Message();
                 $loadedMessage->id = $row['id'];
                 $loadedMessage->adminId = $row['admin_id'];
                 $loadedMessage->userId = $row['user_id'];
@@ -217,8 +239,9 @@ class User {
                 $loadedMessage->creationDate = $row['creation_date'];
 
                 $ret[] = $loadedMessage;
-                return $ret;
+                
             }
+            return $ret;
         } else {
             return null;
         }

@@ -40,8 +40,8 @@ class Admin {
 
     //setery:
 
-    function setAdminName($firstName) {
-        $this->adminName = $firstName;
+    function setAdminName($name) {
+        $this->adminName = $name;
         return $this;
     }
 
@@ -58,6 +58,33 @@ class Admin {
 
     //metody:
 
+    /**
+     * 
+     * @param type $email
+     * @return boolean
+     * return true when e-mail is in database
+     * return false when e-mail isn't in database
+     */
+    static public function checkEmail($email) {
+        $email = self::$conn->real_escape_string($email);
+        $sql = "SELECT * FROM Admins WHERE email='$email'";
+        $result = self::$conn->query($sql);
+        if ($result->num_rows == true) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    static public function loginAdmin($email, $password) {
+        if (Admin::checkEmail($email) != null &&
+            password_verify($password, Admin::loadAdminByEmail($email)->hashedPassword) == true) {
+            return Admin::loadAdminByEmail($email);
+        } else {
+            return false;
+        }
+    }
+    
     public function saveAdminToDB() {
         if ($this->id == -1) {
             $statement = self::$conn->prepare("INSERT INTO Admins(admin_name, email, hashed_password)
@@ -108,7 +135,7 @@ class Admin {
     
     static public function loadAdminByEmail($adminEmail) {
         $safeadminEmail = self::$conn->real_escape_string($adminEmail);
-        $sql = "SELECT * FROM Admins WHERE id = $safeadminEmail";
+        $sql = "SELECT * FROM Admins WHERE email = '$safeadminEmail'";
         $result = self::$conn->query($sql);
 
         if ($result != FALSE && $result->num_rows == 1) {

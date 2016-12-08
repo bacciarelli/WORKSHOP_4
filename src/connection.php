@@ -1,6 +1,7 @@
 <?php
 
 require_once 'User.php';
+require_once 'Admin.php';
 require_once 'Item.php';
 require_once 'Order.php';
 require_once 'Category.php';
@@ -23,6 +24,7 @@ if ($conn->connect_error) {
 
 //setting connections for Models
 User::SetConnection($conn);
+Admin::SetConnection($conn);
 //tutaj analogicznie dajemy Klasa::SetConnection($conn);
 Item::SetConnection($conn);
 Order::SetConnection($conn);

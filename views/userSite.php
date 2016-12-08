@@ -14,6 +14,39 @@ require_once '../src/User.php';
     if (!isset($_SESSION['login']) || $_SESSION['login'] == false) {
         header('Location: ../index.php');
     }
+    if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        $userId = $_SESSION['userId'];
+        $user = User::loadUserById($userId);
+        switch ($_POST['submit']) {
+            case "Zmień dane":
+
+                $user->setFirstName($_POST['firstName']);
+                $user->setLastName($_POST['lastName']);
+                $user->setAddress($_POST['address']);
+
+                $user->saveUserToDB();
+                print "Dane użytkownika zostały zmienione";
+                break;
+
+            case "Zmień hasło":
+                $oldPassword = $_POST['oldPassword'];
+                $userPass = $user->getHashedPassword();
+                if (!password_verify($oldPassword, $userPass)) {
+                    exit("Podano złe stare hasło!<br>");
+                }
+                if ($_POST['newPassword'] == $_POST['newPassword2']) {
+                    $user->setHashedPassword($_POST['newPassword2']);
+                    $user->saveUserToDB();
+                    print "Hasło zostało zmienione.";
+                } else {
+                    print "Powtórzono różne hasła!";
+                }
+                break;
+
+            default:
+                break;
+        }
+    }
     $user = User::loadUserById($_SESSION['userId']);
     $firstName = $user->getFirstName();
     $lastName = $user->getLastName();
@@ -43,38 +76,6 @@ require_once '../src/User.php';
         <input type="password" name ="newPassword2"/><br><br>
         <input type="submit" name="submit" value="Zmień hasło"/>
     </form>
-    <?php
-    if ($_SERVER['REQUEST_METHOD'] == "POST") {
-        $userId = $_SESSION['userId'];
-        $user = User::loadUserById($userId);
-        switch ($_POST['submit']) {
-            case "Zmień dane":
-
-                $user->setFirstName($_POST['firstName']);
-                $user->setLastName($_POST['lastName']);
-                $user->setAddress($_POST['address']);
-                print "Dane użytkownika zostały zmienione";
-                break;
-
-            case "Zmień hasło":
-                $oldPassword = $_POST['oldPassword'];
-                $userPass = $user->getHashedPassword();
-                if (!password_verify($oldPassword, $userPass)) {
-                    exit("Podano złe stare hasło!<br>");
-                }
-                if ($_POST['newPassword'] == $_POST['newPassword2']) {
-                    $user->setHashedPassword($_POST['newPassword2']);
-                    $user->saveUserToDB();
-                    print "Hasło zostało zmienione.";
-                } else {
-                    print "Powtórzono różne hasła!";
-                }
-                break;
-            default:
-                break;
-        }
-    }
-    ?>
 
 
 </body>
