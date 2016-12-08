@@ -184,6 +184,7 @@ class Item {
             $loadedItem->id = $row['id'];
             $loadedItem->itemName = $row['item_name'];
             $loadedItem->price = $row['price'];
+            $loadedItem->description = $row['description'];
             $loadedItem->stockQuantity = $row['stock_quantity'];
             $loadedItem->categoryId = $row['category_id'];
 
