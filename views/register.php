@@ -24,7 +24,6 @@
 </html>
 
 <?php
-//require_once '../config/connection.php';
 require_once '../src/User.php';
 session_start();
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
@@ -41,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         $lastName = $_POST['lastName'];
         $password = $_POST['password'];
 
-        if (User::checkEmail($email) == true) {
+        if (User::checkEmail($email) == false) {
             if (User::registerNewUser($address, $email, $firstName, $lastName, $password) == true) {
                 echo "zarejestrowano";
                 $_SESSION['login'] = true;

@@ -1,6 +1,6 @@
 <?php
 
-//require_once $_SERVER['DOCUMENT_ROOT'] . 'WORKSHOP_4/config/connection.php';
+include_once 'connection.php';
 
 class User {
 
@@ -116,32 +116,41 @@ class User {
      * 
      * @param type $email
      * @return boolean
-     * return false when e-mail is already taken
-     * return true when e-mail is available
+     * return true when e-mail is in database
+     * return false when e-mail isn't in database
      */
     static public function checkEmail($email) {
         $email = self::$conn->real_escape_string($email);
         $sql = "SELECT * FROM Users WHERE email='$email'";
         $result = self::$conn->query($sql);
         if ($result->num_rows == true) {
-            return false;
-        } else {
             return true;
-        }  
+        } else {
+            return false;
+        }
     }
-    
+
+    static public function loginUser($email, $password) {
+        if (User::checkEmail($email) != null &&
+            password_verify($password, User::loadUserByEmail($email)->hashedPassword) == true) {
+            return User::loadUserByEmail($email);
+        } else {
+            return false;
+        }
+    }
+
     static public function registerNewUser($address, $email, $firstName, $lastName, $password) {
-                $newUser = new User();
-                $newUser->address = $address;
-                $newUser->email = $email;
-                $newUser->firstName = $firstName;
-                $newUser->lastName = $lastName;
-                $newUser->setHashedPassword($password);
-                if ($newUser->saveUserToDB() == true) {
-                    return true;
-                } else {
-                    return false;
-                }
+        $newUser = new User();
+        $newUser->address = $address;
+        $newUser->email = $email;
+        $newUser->firstName = $firstName;
+        $newUser->lastName = $lastName;
+        $newUser->setHashedPassword($password);
+        if ($newUser->saveUserToDB() == true) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     static public function loadUserById($userId) {
@@ -186,7 +195,6 @@ class User {
             return null;
         }
     }
-    
 
     public function loadAllUsersMessages() {
         $userId = $_SESSION['id'];

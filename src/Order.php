@@ -18,7 +18,7 @@
   FOREIGN KEY(status_id) REFERENCES Status(id))
  */
 
-include_once '../config/connection.php';
+include_once 'connection.php';
 include_once 'Item.php';
 
 class Order {

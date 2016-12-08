@@ -18,7 +18,7 @@
   FOREIGN KEY(item_id) REFERENCES Items(id)
   );
  */
-include_once '../config/connection.php';
+include_once 'connection.php';
 
 class Item {
 
