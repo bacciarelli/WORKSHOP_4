@@ -1,26 +1,30 @@
 <?php
 
 /*
-  CREATE TABLE Items_Orders(
-  id int AUTO_INCREMENT NOT NULL,
-  item_id int NOT NULL,
-  order_id int NOT NULL,
-  quantity int NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(item_id) REFERENCES Items(id),
-  FOREIGN KEY(order_id) REFERENCES Orders(id))
- * 
- *     CREATE TABLE Orders(
-  id int AUTO_INCREMENT NOT NULL,
-  user_id int NOT NULL,
-  status_id int NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(user_id) REFERENCES Users(id),
-  FOREIGN KEY(status_id) REFERENCES Status(id))
+
+    "create table Items_Orders(
+                        id int AUTO_INCREMENT NOT NULL,
+                        item_id int NOT NULL,
+                        order_id int NOT NULL,                  
+                        quantity int NOT NULL, 
+                        PRIMARY KEY(id),
+                        FOREIGN KEY(item_id) REFERENCES Items(id),
+                        FOREIGN KEY(order_id) REFERENCES Orders(id))
+     ENGINE=InnoDB, CHARACTER SET=utf8"
+,
+    "create table Orders(
+                        id int AUTO_INCREMENT NOT NULL,
+                        user_id int NOT NULL,
+                        status_id int NOT NULL,
+                        PRIMARY KEY(id),
+                        FOREIGN KEY(user_id) REFERENCES Users(id),
+                        FOREIGN KEY(status_id) REFERENCES Status(id))
+     ENGINE=InnoDB, CHARACTER SET=utf8"];
  */
 
-include_once './config/connection.php';
+include_once '../config/connection.php';
 include_once 'Item.php';
+
 
 class Order {
 
@@ -52,34 +56,34 @@ class Order {
     }
 
     //public methods
-    public function saveToDB(mysqli $connection) {
+    public function saveToDB() {
         if ($this->id == -1) {
             $sql = "INSERT INTO Orders (status) VALUES ($this->status)";
-            if ($connection->query($sql)) {
-                $this->id = $connection->insert_id;
+            if (self::$conn->query($sql)) {
+                $this->id = self::$conn->insert_id;
                 return true;
             } else {
-                echo "Problem z zapytaniem: " . $connection->error;
+                echo "Problem z zapytaniem: " . self::$conn->error;
                 return false;
             }
         }
     }
 
-    public function loadOrdersByUserId(mysqli $connection, $userId) {
-        $safeUserId = $connection->real_escape_string($userId);
+    public function loadOrdersByUserId($userId) {
+        $safeUserId = self::$conn->real_escape_string($userId);
         $sql = "SELECT * FROM Orders
                                     JOIN Items_Orders ON Orders.id=Items_Orders.order_id
                                     JOIN Items ON Items.id = Items_Orders.item_id
                                     WHERE user_id = $safeUserId";
     }
 
-    public function loadOrderByOrderId(mysqli $connection, $orderId) {
-        $safeOrderId = $connection->real_escape_string($orderId);
+    public function loadOrderByOrderId($orderId) {
+        $safeOrderId = self::$conn->real_escape_string($orderId);
         $sql = "SELECT * FROM Orders
                                     JOIN Items_Orders ON Orders.id=Items_Orders.order_id
                                     JOIN Items ON Items.id = Items_Orders.item_id
                                     WHERE order_id = $safeOrderId";
-        $result = $connection->query($sql);
+        $result = self::$conn->query($sql);
 
         if ($result != false && $result->num_rows == 1) {
             $row = $result->fetch_assoc();
@@ -95,7 +99,7 @@ class Order {
     //implementing abstract methods of Cart()
     public function getCartQuantity($itemId) {
         $sql = "SELECT quantity FROM Items_Orders WHERE item_id=$itemId";
-        $result = $connection->query($sql);
+        $result = self::$conn->query($sql);
 
         if ($result != false && $result == 1) {
             $row = $result->fetch_assoc();
@@ -109,14 +113,14 @@ class Order {
         $sql = "SELECT item_id, FROM Items_Orders WHERE order_id=$this->id";
         $cart = [];
 
-        $result = $connection->query($sql);
+        $result = self::$conn->query($sql);
 
         if ($result != false && $result->num_rows > 0) {
             $row = $result->fetch_assoc();
 
             foreach ($row as $cartItem) {
                 $cartItem = new Item();
-                $cartItem->loadItemById($connection, $row['item_id']);
+                $cartItem->loadItemById($row['item_id']);
                 $cart[] = $cartItem;
             }
             return $cart;
@@ -144,8 +148,8 @@ class Order {
         $sql = "INSERT INTO Items_Orders (item_id, order_id, quantity)
                                     VALUES ($itemId, $orderId, 1)";
 
-        if ($this->loadOrderByOrderId($connection, $orderId) != false && $this->getStatus() == "oczekujace") {
-            $result = $connection->query($sql);
+        if ($this->loadOrderByOrderId($orderId) != false && $this->getStatus() == "oczekujace") {
+            $result = self::$conn->query($sql);
             if ($result != false) {
                 return true;
             } else {
@@ -153,7 +157,7 @@ class Order {
             }
         } else {
             $newOrder = new Order();
-            if ($newOrder->saveToDB($connection)) {
+            if ($newOrder->saveToDB()) {
                 $this->addToCart($itemId, $orderId);
             }
         }
