@@ -9,6 +9,13 @@ include_once "../src/Cart.php";
 include_once "../src/Admin.php";
 include_once "../src/connection.php";
 
+if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
+    $loadedUserId = $_SESSION['userId'];
+} else {
+    echo "<br><a href='../index.php'>Zaloguj się</a>";
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     // jeśli do strony showCart przekazujemy parametr item_id
     if (isset($_GET['item_id'])) {
@@ -30,24 +37,68 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         // oblicz całkowitą wartość koszyka
         // oblicz produkty w koszyku
         $_SESSION['item_value'] = 0;
-        
-    } else {
-        if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
-            echo "Wyświetl koszyk";
-            Cart::displayCart($_SESSION['cart']);
-        } else {
-            echo "Twój koszyk jest pusty!";
-        }
+
+        // kontynuacja zakupów - ustawienie ścieżki na ostatnio przeglądaną kategorię
+        $categoryId = Item::loadItemById($itemId)->getCategoryId();
+        $endpoint = "mainPage.php?category_id=" . $categoryId;
     }
+
+    if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
+        $cartContent = Cart::displayCart($_SESSION['cart']);
+        $form = '<form action="" method="POST">
+                                                <input type="submit" value="Potwierdź zamówienie">
+                                         </form>';
+    } else {
+        echo "Twój koszyk jest pusty!";
+    }
+
+    // jeśli nie dodano produktu do koszyka, powrót do strony głównej
+    $endpoint = "mainPage.php";
 }
 
+if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
+        $cartContent = Cart::displayCart($_SESSION['cart']);
+    } else {
+        echo "Twój koszyk jest pusty!";
+    }
+    $endpoint = "mainPage.php";
 
+    $newOrder = new Order($_SESSION['userId']);
+    $newOrder->saveToDB();
+    $orderId = $newOrder->getId();
+
+    foreach ($_SESSION['cart'] as $itemId => $quantity) {
+        Cart::addToCart($itemId, $orderId, $quantity);
+    }
+
+    $_SESSION['cart'] = [];
+    $_SESSION['item_value'] = 0;
+    $_SESSION['total_price'] = 0;
+}
+
+//var_dump($_SESSION);
 //var_dump($_SESSION['cart']);
 //unset($_SESSION['cart']);
 ?>
-
 <div>
-    <a href="mainPage.php">Kontynuuj zakupy | </a>
+    <?php
+    if (isset($cartContent)) {
+        $cartContent;
+    }
+    ?>
+</div>
+<div>
+
+    <?php
+    if (isset($form)) {
+        echo $form;
+    }
+    ?>
+
+</div>
+<div>
+    <a href="<?= $endpoint ?> ">Kontynuuj zakupy | </a>
     <a href="showCart.php">Koszyk</a>
 </div>
 

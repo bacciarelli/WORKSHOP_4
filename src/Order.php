@@ -29,35 +29,47 @@ class Order {
 
     static private $conn;
     private $id;
-    private $status;
+    private $statusId;
+    private $userId;
 
     static public function SetConnection($conn) {
         self::$conn = $conn;
     }
 
-    public function __construct() {
+    public function __construct($userId) {
         $this->id = -1;
-        $this->status = "oczekujace";
+        $this->statusId = 1;
+        $this->setUserId($userId);
     }
 
     // setters and getters
+
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    public function setUserId($userId) {
+        $this->userId = $userId;
+        return $this;
+    }
+
     public function getId() {
         return $this->id;
     }
 
-    public function getStatus() {
-        return $this->status;
+    public function getStatusId() {
+        return $this->statusId;
     }
 
-    public function setStatus($status) {
-        $this->status = $status;
+    public function setStatusId($statusId) {
+        $this->statusId = $statusId;
         return $this;
     }
 
     //public methods
     public function saveToDB() {
         if ($this->id == -1) {
-            $sql = "INSERT INTO Orders (status) VALUES ($this->status)";
+            $sql = "INSERT INTO Orders (user_id, status_id) VALUES ($this->userId, $this->statusId)";
             if (self::$conn->query($sql)) {
                 $this->id = self::$conn->insert_id;
                 return true;
@@ -82,7 +94,7 @@ class Order {
             foreach ($result as $row) {
                 $loadedOrder = new Order();
                 $loadedOrder->id = $row['id'];
-                $loadedOrder->status = $row['status_id'];
+                $loadedOrder->statusId = $row['status_id'];
 
                 $ret[$loadedOrder->id] = $loadedOrder;
             }
@@ -103,7 +115,7 @@ class Order {
 
             $loadedOrder = new Order();
             $loadedOrder->id = $row['id'];
-            $loadedOrder->status = $row['status_id'];
+            $loadedOrder->statusId = $row['status_id'];
             return $loadedOrder;
         }
         return false;
@@ -156,25 +168,7 @@ class Order {
         return $totalPrice;
     }
 
-    public function addToCart($itemId, $orderId) {
 
-        $sql = "INSERT INTO Items_Orders (item_id, order_id, quantity)
-                                    VALUES ($itemId, $orderId, 1)";
-
-        if ($this->loadOrderByOrderId($orderId) != false && $this->getStatus() == "oczekujace") {
-            $result = self::$conn->query($sql);
-            if ($result != false) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            $newOrder = new Order();
-            if ($newOrder->saveToDB()) {
-                $this->addToCart($itemId, $orderId);
-            }
-        }
-    }
 
     public function removeFromCart($itemId) {
 
