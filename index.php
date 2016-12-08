@@ -1,7 +1,8 @@
 <?php
 session_start();
-require_once 'src/User.php';
-require_once 'src/Admin.php';
+//use WORKSHOP_4\src\User;
+require_once './src/User.php';
+//require_once './src/Admin.php';
 ?>
 
 <!DOCTYPE html>
@@ -26,7 +27,7 @@ require_once 'src/Admin.php';
         <p><a href="./views/register.php">Zarejestruj się</a></p>
         <?php
     } else {
-        echo '<a href="src/logout.php">Wyloguj się</a><br><br>';
+        echo '<a href="./src/logout.php">Wyloguj się</a><br><br>';
     }
 
     if ($_SERVER['REQUEST_METHOD'] == "POST") {

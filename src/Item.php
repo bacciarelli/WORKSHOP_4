@@ -1,5 +1,4 @@
 <?php
-
 /*
   "create table Items_Orders(
   id int AUTO_INCREMENT NOT NULL,
@@ -20,7 +19,8 @@
   group_name varchar(100) NOT NULL,
   PRIMARY KEY(id))
  */
-use config\Database;
+
+include_once '../config/connection.php';
 
 class Item {
 
