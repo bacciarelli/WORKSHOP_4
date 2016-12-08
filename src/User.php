@@ -98,17 +98,22 @@ class User {
             }
             return false;
         } else {
-            $sql = "UPDATE Users SET first_name = '$this->firstName',
-                                    last_name = '$this->lastName',
-                                    email = '$this->email'
-                                    hashed_password = '$this->hashedPassword'
-                                    address = '$this->address'
-                                    WHERE id = $this->id";
-            $result = self::$conn->query($sql);
-            if ($result) {
-                return TRUE;
+            $statement = self::$conn->prepare("UPDATE Users SET first_name=?,
+                                    last_name=?,
+                                    email=?,
+                                    hashed_password=?,
+                                    address=?
+                                    Where id=$this->id");
+            if (!$statement) {
+                return false;
             }
-            return FALSE;
+            $statement->bind_param('sssss', $this->firstName, $this->lastName, $this->email, $this->hashedPassword, $this->address);
+            if ($statement->execute()) {
+                return true;
+            } else {
+                echo "Problem z zapytaniem. " . $statement->error;
+            }
+            return false;
         }
     }
 

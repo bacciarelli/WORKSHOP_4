@@ -1,7 +1,7 @@
 <?php
 require_once("../src/connection.php");
 
-$twitterArraysSQL = ["create table Admins(
+$internetShopArraysSQL = ["create table Admins(
                         id int AUTO_INCREMENT NOT NULL,
                         admin_name varchar(25) NOT NULL UNIQUE,
                         email varchar(255) NOT NULL UNIQUE,
@@ -81,7 +81,7 @@ $twitterArraysSQL = ["create table Admins(
      ENGINE=InnoDB, CHARACTER SET=utf8"
     ];
 
-foreach($twitterArraysSQL as $query){
+foreach($internetShopArraysSQL as $query){
     $result = $conn->query($query);
     if ($result === TRUE) {
         echo "Tabela zostala stworzona poprawnie<br>";

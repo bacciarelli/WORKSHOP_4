@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 echo "zarejestrowano";
                 $_SESSION['login'] = true;
                 $newUser = User::loadUserByEmail($email);
-                $_SESSION['user_id'] = $newUser->getId();
+                $_SESSION['userId'] = $newUser->getId();
                 header('Location: ../index.php');
             } else {
                 echo "niezarejestrowano";

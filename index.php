@@ -2,7 +2,6 @@
 session_start();
 
 require_once './src/User.php';
-require_once './src/Admin.php';
 ?>
 
 <!DOCTYPE html>
@@ -25,7 +24,7 @@ require_once './src/Admin.php';
             } else {
                 $user = User::loginUser($_POST['email'], $_POST['password']);
                 $_SESSION['login'] = true;
-                $_SESSION['user_id'] = $user->getId();
+                $_SESSION['userId'] = $user->getId();
                 print "Witaj " . $user->getFirstName();
             }
         }
@@ -43,7 +42,8 @@ require_once './src/Admin.php';
         <p><a href="./views/register.php">Zarejestruj się</a></p>
         <?php
     } else {
-        echo '<a href="./views/logout.php">Wyloguj się</a><br><br>';
+        echo '<a href="./views/logout.php">Wyloguj się</a>';
+        echo '<a href="./views/userSite.php">Twoja strona</a>';
     }
 
     ?>
