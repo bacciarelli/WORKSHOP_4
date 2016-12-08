@@ -5,6 +5,7 @@ require_once 'Admin.php';
 require_once 'Item.php';
 require_once 'Order.php';
 require_once 'Category.php';
+require_once 'Cart.php';
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
@@ -29,4 +30,5 @@ Admin::SetConnection($conn);
 Item::SetConnection($conn);
 Order::SetConnection($conn);
 Category::SetConnection($conn);
+Cart::SetConnection($conn);
 ?>

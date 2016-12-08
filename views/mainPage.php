@@ -9,7 +9,7 @@ include_once "../src/Admin.php";
 include_once "../src/connection.php";
 
 if (isset($_SESSION['login']) && $_SESSION['login'] == true) {
-    $loadedUserId = $_SESSION['user_id'];
+    $loadedUserId = $_SESSION['userId'];
 }
 
 $categories = Category::loadAllCategories();
