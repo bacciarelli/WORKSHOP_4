@@ -1,4 +1,5 @@
 <?php
+
 /*
   "create table Items_Orders(
   id int AUTO_INCREMENT NOT NULL,
@@ -31,7 +32,7 @@ class Item {
     private $description;
     private $price;
     private $stockQuantity;
-    private $groupName;
+    private $categoryId;
 
     static public function SetConnection($conn) {
         self::$conn = $conn;
@@ -43,7 +44,7 @@ class Item {
         $this->description = "";
         $this->price = null;
         $this->stockQuantity = null;
-        $this->groupName = "";
+        $this->categoryId = null;
     }
 
     // getters and setters
@@ -51,7 +52,7 @@ class Item {
         return $this->id;
     }
 
-    public function getName() {
+    public function getItemName() {
         return $this->itemName;
     }
 
@@ -67,8 +68,8 @@ class Item {
         return $this->stockQuantity;
     }
 
-    public function getGroup() {
-        return $this->groupName;
+    public function getCategoryId() {
+        return $this->categoryId;
     }
 
     public function setItemName($itemName) {
@@ -91,8 +92,8 @@ class Item {
         return $this;
     }
 
-    public function setGroupName($groupName) {
-        $this->groupName = $groupName;
+    public function setCategoryId($categoryId) {
+        $this->categoryId = $categoryId;
         return $this;
     }
 
@@ -104,12 +105,12 @@ class Item {
     public function saveItemToDB() {
         if ($this->id == -1) {
             $statement = self::$conn->prepare
-                    ("INSERT INTO Items (item_name, description, price, stock_quantity, group_name)
+                    ("INSERT INTO Items (item_name, description, price, stock_quantity, category_id)
                                                         VALUES (?, ?, ?. ?, ?)");
             if (!$statement) {
                 return false;
             }
-            $statement->bind_param('sssss', $this->itemName, $this->description, $this->price, $this->stockQuantity, $this->groupName);
+            $statement->bind_param('sssss', $this->itemName, $this->description, $this->price, $this->stockQuantity, $this->categoryId);
             if ($statement->execute()) {
                 $this->id = $statement->insert_id;
                 return true;
@@ -130,15 +131,15 @@ class Item {
         }
     }
 
-    public function updateItem($itemName, $description, $price, $stockQuantity, $groupName) {
-        $safeName = $connection->real_escape_string($itemName);
-        $safeDescription = $connection->real_escape_string($description);
-        $safePrice = $connection->real_escape_string($price);
-        $safeStockQuantity = $connection->real_escape_string($stockQuantity);
-        $safeGroup = $connection->real_escape_string($groupName);
+    public function updateItem($itemName, $description, $price, $stockQuantity, $categoryId) {
+        $safeName = self::$conn->real_escape_string($itemName);
+        $safeDescription = self::$conn->real_escape_string($description);
+        $safePrice = self::$conn->real_escape_string($price);
+        $safeStockQuantity = self::$conn->real_escape_string($stockQuantity);
+        $safeCategoryId = self::$conn->real_escape_string($categoryId);
 
         $sql = "UPDATE Items SET item_name='$safeName', description='$safeDescription',
-                                    price=$safePrice, stock_quantity=$safeStockQuantity, group_name='$safeGroup'
+                                    price=$safePrice, stock_quantity=$safeStockQuantity, category_id=$safeCategoryId
                                     WHERE id=$this->id";
         if (self::$conn->query($sql)) {
             return true;
@@ -147,10 +148,10 @@ class Item {
         }
     }
 
-    static public function loadItemsByGroup($groupName) {
-        $safeGroup = self::$conn->real_escape_string($groupName);
+    static public function loadItemsByCategory($categoryId) {
+        $safeCaegoryId = self::$conn->real_escape_string($categoryId);
 
-        $sql = "SELECT * FROM Items WHERE group_name='$safeGroup' ";
+        $sql = "SELECT * FROM Items WHERE category_id=$safeCaegoryId ";
         $result = self::$conn->query($sql);
         $ret = [];
 
@@ -160,8 +161,9 @@ class Item {
                 $loadedItem->id = $row['id'];
                 $loadedItem->itemName = $row['item_name'];
                 $loadedItem->price = $row['price'];
+                $loadedItem->description = $row['description'];
                 $loadedItem->stockQuantity = $row['stock_quantity'];
-                $loadedItem->groupName = $row['group_name'];
+                $loadedItem->categoryId = $row['category_id'];
 
                 $ret[$loadedItem->id] = $loadedItem;
             }
@@ -183,7 +185,7 @@ class Item {
             $loadedItem->itemName = $row['item_name'];
             $loadedItem->price = $row['price'];
             $loadedItem->stockQuantity = $row['stock_quantity'];
-            $loadedItem->groupName = $row['group_name'];
+            $loadedItem->categoryId = $row['category_id'];
 
             return $loadedItem;
         }
@@ -196,14 +198,16 @@ class Item {
         $ret = [];
 
         if ($result != false && $result->num_rows > 0) {
-            $loadedItem = new Item();
-            $loadedItem->id = $row['id'];
-            $loadedItem->itemName = $row['item_name'];
-            $loadedItem->price = $row['price'];
-            $loadedItem->stockQuantity = $row['stock_quantity'];
-            $loadedItem->groupName = $row['group_name'];
+            foreach ($result as $row) {
+                $loadedItem = new Item();
+                $loadedItem->id = $row['id'];
+                $loadedItem->itemName = $row['item_name'];
+                $loadedItem->price = $row['price'];
+                $loadedItem->stockQuantity = $row['stock_quantity'];
+                $loadedItem->categoryId = $row['category_id'];
 
-            $ret[$loadedItem->id] = $loadedItem;
+                $ret[$loadedItem->id] = $loadedItem;
+            }
         }
     }
 

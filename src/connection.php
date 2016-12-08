@@ -3,6 +3,7 @@
 require_once 'User.php';
 require_once 'Item.php';
 require_once 'Order.php';
+require_once 'Category.php';
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
@@ -25,4 +26,5 @@ User::SetConnection($conn);
 //tutaj analogicznie dajemy Klasa::SetConnection($conn);
 Item::SetConnection($conn);
 Order::SetConnection($conn);
+Category::SetConnection($conn);
 ?>
