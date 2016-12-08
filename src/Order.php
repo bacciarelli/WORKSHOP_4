@@ -79,41 +79,38 @@ class Order {
             }
         }
     }
-
+    
+    public function deleteOrder() {
+        $sql = "DELETE FROM Orders WHERE id = $this->id";
+        $result = self::$conn->query($sql);
+        if ($result) {
+            return true;
+        }
+        return false;
+    }
+    
     static public function loadOrdersByUserId($userId) {
         $safeUserId = self::$conn->real_escape_string($userId);
-        $sql = "SELECT * FROM Orders
-                                    JOIN Items_Orders ON Orders.id=Items_Orders.order_id
-                                    JOIN Items ON Items.id = Items_Orders.item_id
-                                    WHERE user_id = $safeUserId";
+        $sql = "SELECT Orders.id, Status.text FROM Orders JOIN Status ON "
+                . "Orders.status_id=Status.id WHERE user_id = $safeUserId "
+                . "ORDER BY status_id";
         $result = self::$conn->query($sql);
-
-        $ret = [];
-
         if ($result != false && $result->num_rows > 0) {
-            foreach ($result as $row) {
-                $loadedOrder = new Order();
-                $loadedOrder->id = $row['id'];
-                $loadedOrder->statusId = $row['status_id'];
-
-                $ret[$loadedOrder->id] = $loadedOrder;
-            }
+            return $result;
+        } else {
+            return null;
         }
-        return $ret;
     }
 
-    public function loadOrderByOrderId($orderId) {
+    static public function loadOrderByOrderId($orderId) {
         $safeOrderId = self::$conn->real_escape_string($orderId);
-        $sql = "SELECT * FROM Orders
-                                    JOIN Items_Orders ON Orders.id=Items_Orders.order_id
-                                    JOIN Items ON Items.id = Items_Orders.item_id
-                                    WHERE order_id = $safeOrderId";
+        $sql = "SELECT * FROM Orders WHERE id = $safeOrderId";
         $result = self::$conn->query($sql);
 
         if ($result != false && $result->num_rows == 1) {
             $row = $result->fetch_assoc();
 
-            $loadedOrder = new Order();
+            $loadedOrder = new Order($row['user_id']);
             $loadedOrder->id = $row['id'];
             $loadedOrder->statusId = $row['status_id'];
             return $loadedOrder;

@@ -19,8 +19,6 @@ require_once '../src/User.php';
     if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {
         echo '<a href="./logout.php">Wyloguj się</a> | ';
         echo '<a href="./panel.php">Panel główny</a> | ';
-        echo '<a href="./views/logout.php">Wyloguj się</a> | ';
-        echo '<a href="./views/logout.php">Wyloguj się</a> | ';
         
         print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
     } else {
@@ -38,7 +36,7 @@ require_once '../src/User.php';
         print 'email: ' . $user->getEmail() . '<br>';
         print 'adres: ' . $user->getAddress() . '<br>';
         ?>
-        <a href="./userOrders.php?userId=<?=$user->getId()?>">Zamówienia użytkownika</a><br><br><hr>
+        <a href="./userOrders.php?userId=<?=$user->getId()?>">Zamówienia użytkownika</a><br><br>
         <a href="./usersList.php?userId=<?=$user->getId()?>">Usuń użytkownika</a><br><br><hr>
         <?php
     }
