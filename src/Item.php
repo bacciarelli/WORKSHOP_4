@@ -1,47 +1,48 @@
 <?php
 /*
-  CREATE TABLE Items(
+  "create table Items_Orders(
   id int AUTO_INCREMENT NOT NULL,
-  name varchar(255) NOT NULL UNIQUE,
+  item_id int NOT NULL,
+  order_id int NOT NULL,
+  quantity int NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(item_id) REFERENCES Items(id),
+  FOREIGN KEY(order_id) REFERENCES Orders(id))
+  ENGINE=InnoDB, CHARACTER SET=utf8"
+ * 
+  "create table Items(
+  id int AUTO_INCREMENT NOT NULL,
+  item_name varchar(255) NOT NULL UNIQUE,
   description varchar(255) NOT NULL,
   price decimal(8, 2) NOT NULL,
   stock_quantity int NOT NULL,
-  group varchar(25),
-  PRIMARY KEY(id)
-  );
-
-  CREATE TABLE Images(
-  id int AUTO_INCREMENT NOT NULL,
-  item_id int NOT NULL,
-  path varchar(255) NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(item_id) REFERENCES Items(id)
-  );
+  group_name varchar(100) NOT NULL,
+  PRIMARY KEY(id))
  */
+
 include_once 'connection.php';
 
 class Item {
 
-    static private $conn;
-    
+    private $conn;
     private $id;
-    private $name;
+    private $itemName;
     private $description;
     private $price;
     private $stockQuantity;
-    private $group;
+    private $groupName;
 
     static public function SetConnection($conn) {
         self::$conn = $conn;
     }
-    
+
     public function __construct() {
         $this->id = -1;
-        $this->name = "";
+        $this->itemName = "";
         $this->description = "";
         $this->price = null;
         $this->stockQuantity = null;
-        $this->group = "";
+        $this->groupName = "";
     }
 
     // getters and setters
@@ -50,7 +51,7 @@ class Item {
     }
 
     public function getName() {
-        return $this->name;
+        return $this->itemName;
     }
 
     public function getDescription() {
@@ -66,11 +67,11 @@ class Item {
     }
 
     public function getGroup() {
-        return $this->group;
+        return $this->groupName;
     }
 
-    public function setName($name) {
-        $this->name = $name;
+    public function setItemName($itemName) {
+        $this->itemName = $itemName;
         return $this;
     }
 
@@ -89,8 +90,8 @@ class Item {
         return $this;
     }
 
-    public function setGroup($group) {
-        $this->group = $group;
+    public function setGroupName($groupName) {
+        $this->groupName = $groupName;
         return $this;
     }
 
@@ -99,15 +100,15 @@ class Item {
 //        return $this->price * $quantity;
 //    }
 
-    public function saveToDB(mysqli $connection) {
+    public function saveItemToDB() {
         if ($this->id == -1) {
-            $statement = $connection->prepare
-                    ("INSERT INTO Items (name, description, price, stock_quantity, group)
+            $statement = self::$conn->prepare
+                    ("INSERT INTO Items (item_name, description, price, stock_quantity, group_name)
                                                         VALUES (?, ?, ?. ?, ?)");
             if (!$statement) {
                 return false;
             }
-            $statement->bind_param('sssss', $this->name, $this->description, $this->price, $this->stockQuantity, $this->group);
+            $statement->bind_param('sssss', $this->itemName, $this->description, $this->price, $this->stockQuantity, $this->groupName);
             if ($statement->execute()) {
                 $this->id = $statement->insert_id;
                 return true;
@@ -118,48 +119,48 @@ class Item {
         }
     }
 
-    public function deleteFromDB(mysqli $connection, $id) {
-        $safeId = $connection->real_escape_string($id);
+    public function deleteFromDB($id) {
+        $safeId = self::$conn->real_escape_string($id);
         $sql = "DELETE FROM Items WHERE id=$safeId";
-        if ($connection->query($sql)) {
+        if (self::$conn->query($sql)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function updateItem(mysqli $connection, $name, $description, $price, $stockQuantity, $group) {
-        $safeName = $connection->real_escape_string($name);
+    public function updateItem($itemName, $description, $price, $stockQuantity, $groupName) {
+        $safeName = $connection->real_escape_string($itemName);
         $safeDescription = $connection->real_escape_string($description);
         $safePrice = $connection->real_escape_string($price);
         $safeStockQuantity = $connection->real_escape_string($stockQuantity);
-        $safeGroup = $connection->real_escape_string($group);
+        $safeGroup = $connection->real_escape_string($groupName);
 
-        $sql = "UPDATE Items SET name='$safeName', description='$safeDescription',
-                                    price=$safePrice, stock_quantity=$safeStockQuantity, group='$safeGroup'
+        $sql = "UPDATE Items SET item_name='$safeName', description='$safeDescription',
+                                    price=$safePrice, stock_quantity=$safeStockQuantity, group_name='$safeGroup'
                                     WHERE id=$this->id";
-        if ($connection->query($sql)) {
+        if (self::$conn->query($sql)) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function loadItemsByGroup(mysqli $connection, $group) {
-        $safeGroup = $connection->real_escape_string($group);
+    static public function loadItemsByGroup($groupName) {
+        $safeGroup = self::$conn->real_escape_string($groupName);
 
-        $sql = "SELECT * FROM Items WHERE group='$safeGroup' ";
-        $result = $connection->query($sql);
+        $sql = "SELECT * FROM Items WHERE group_name='$safeGroup' ";
+        $result = self::$conn->query($sql);
         $ret = [];
 
         if ($result != false && $result->num_rows > 0) {
             foreach ($result as $row) {
                 $loadedItem = new Item();
                 $loadedItem->id = $row['id'];
-                $loadedItem->name = $row['name'];
+                $loadedItem->itemName = $row['item_name'];
                 $loadedItem->price = $row['price'];
                 $loadedItem->stockQuantity = $row['stock_quantity'];
-                $loadedItem->group = $row['group'];
+                $loadedItem->groupName = $row['group_name'];
 
                 $ret[$loadedItem->id] = $loadedItem;
             }
@@ -167,28 +168,42 @@ class Item {
         return $ret;
     }
 
-    public function loadItemById(mysqli $connection, $id) {
-        $safeId = $connection->real_escape_string($id);
+    static public function loadItemById($id) {
+        $safeId = self::$conn->real_escape_string($id);
 
         $sql = "SELECT * FROM Items WHERE id=$safeId";
-        $result = $connection->query($sql);
+        $result = self::$conn->query($sql);
 
         if ($result != false && $result->num_rows == 1) {
             $row = $result->fetch_assoc();
 
             $loadedItem = new Item();
             $loadedItem->id = $row['id'];
-            $loadedItem->name = $row['name'];
+            $loadedItem->itemName = $row['item_name'];
             $loadedItem->price = $row['price'];
             $loadedItem->stockQuantity = $row['stock_quantity'];
-            $loadedItem->group = $row['group'];
+            $loadedItem->groupName = $row['group_name'];
 
             return $loadedItem;
         }
         return null;
     }
 
-//    public function loadAllItems() {
-//        
-//   }
+    static public function loadAllItems() {
+        $sql = "SELECT * FROM Items";
+        $result = self::$conn->query($sql);
+        $ret = [];
+
+        if ($result != false && $result->num_rows > 0) {
+            $loadedItem = new Item();
+            $loadedItem->id = $row['id'];
+            $loadedItem->itemName = $row['item_name'];
+            $loadedItem->price = $row['price'];
+            $loadedItem->stockQuantity = $row['stock_quantity'];
+            $loadedItem->groupName = $row['group_name'];
+
+            $ret[$loadedItem->id] = $loadedItem;
+        }
+    }
+
 }
