@@ -24,7 +24,7 @@ require_once '../src/Message.php';
         header('Location: ./panel.php');
     }
     ?>
-    <h1>Panel admina!!:)</h1>
+    <h1>Panel admina</h1>
     <h3>Edycja zamówienia</h3>
     <?php
     if (isset($_GET['orderId'])) {

@@ -137,6 +137,23 @@ class Order {
         }
         return false;
     }
+    
+    static public function loadAllOrders() {
+        $sql = "SELECT * FROM Orders";
+        $result = self::$conn->query($sql);
+        $ret = [];
+
+        if ($result != false && $result->num_rows > 0) {
+            foreach ($result as $row) {
+                $loadedOrder = new Order($row['user_id']);
+                $loadedOrder->id = $row['id'];
+                $loadedOrder->statusId = $row['status_id'];
+                
+                $ret[] = $loadedOrder;
+            }
+        }
+        return $ret;
+    }
 
 //implementing abstract methods of Cart()
     public function getCartQuantity($itemId) {
