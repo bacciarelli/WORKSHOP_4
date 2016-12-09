@@ -10,11 +10,18 @@ require_once 'Message.php';
 //tutaj analogicznie dajemy require_once('Klasa.php')
 
 
+//$configDB = array(
+//    'servername' => "localhost",
+//    'username' => "root",
+//    'password' => "coderslab",
+//    'baseName' => "internet_shop_db"
+//);
+
 $configDB = array(
     'servername' => "localhost",
-    'username' => "root",
+    'username' => "test",
     'password' => "coderslab",
-    'baseName' => "internet_shop_db"
+    'baseName' => "TEST_internet_shop_db"
 );
 
 // Tworzymy nowe połączenie
