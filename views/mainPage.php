@@ -31,19 +31,37 @@ $categories = Category::loadAllCategories();
             ?>
         </div>
         <hr/>
+        <div class="random_items">
+            <table>
+            <?php
+            if (!isset($_GET['category_id'])) {
+            $randomItems = Item::loadRandomItems();
+            
+            foreach ($randomItems as $item) {
+                echo "<tr>";
+                echo "<td><a href='showItem.php?item_id=" . $item->getId() . "'>"
+                . $item->getItemName() . "</a></td>";
+                echo "<td>" . $item->getDescription() . "</td>";
+                echo "<td>" . $item->getPrice() . " zł</td>";
+                echo "</tr>";
+            }
+            }
+            ?>
+            </table>
+        </div>
+        <hr/>
         <div class="items">
             <table>
 
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if (isset($_GET['category_id'])) {
         $categoryId = $_GET['category_id'];
         $items = Item::loadItemsByCategory($categoryId);
-        
+
         foreach ($items as $item) {
             echo "<tr>";
-            echo "<td><a href='showItem.php?item_id=" . $item->getId() . "'>" 
+            echo "<td><a href='showItem.php?item_id=" . $item->getId() . "'>"
             . $item->getItemName() . "</a></td>";
             echo "<td>" . $item->getDescription() . "</td>";
             echo "<td>" . $item->getPrice() . " zł</td>";
@@ -51,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
         }
     }
 }
-
 ?>
 
             </table>

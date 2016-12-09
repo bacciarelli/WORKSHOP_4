@@ -159,7 +159,7 @@ class Item {
             return $result;
         }
     }
-    
+
     static public function loadItemsByCategory($categoryId) {
         $safeCaegoryId = self::$conn->real_escape_string($categoryId);
 
@@ -222,6 +222,28 @@ class Item {
                 $ret[$loadedItem->id] = $loadedItem;
             }
         }
+        return $ret;
+    }
+
+    static public function loadRandomItems() {
+        $sql = "SELECT * FROM Items WHERE id >= (SELECT FLOOR( MAX(id) * RAND()) FROM Items ) ORDER BY id LIMIT 10";
+        $result = self::$conn->query($sql);
+        $ret = [];
+
+        if ($result != false && $result->num_rows > 0) {
+            foreach ($result as $row) {
+                $loadedItem = new Item();
+                $loadedItem->id = $row['id'];
+                $loadedItem->itemName = $row['item_name'];
+                $loadedItem->price = $row['price'];
+                $loadedItem->description = $row['description'];
+                $loadedItem->stockQuantity = $row['stock_quantity'];
+                $loadedItem->categoryId = $row['category_id'];
+
+                $ret[$loadedItem->id] = $loadedItem;
+            }
+        }
+        return $ret;
     }
 
 }
