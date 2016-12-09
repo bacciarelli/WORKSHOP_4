@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
             </table>
         </div>
         <div>
-            <a href="index.php?category_id=<?= $item->getCategoryId() ?>">Powrót do listy | </a>
+            <a href="../index.php?category_id=<?= $item->getCategoryId() ?>">Powrót do listy | </a>
             <a href="showCart.php">Koszyk</a>
         </div>
     </body>
