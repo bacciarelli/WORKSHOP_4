@@ -56,11 +56,6 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     $endpoint = "mainPage.php";
 }
 
-
-
-//var_dump($_SESSION);
-//var_dump($_SESSION['cart']);
-//unset($_SESSION['cart']);
 ?>
 <div>
     <?php

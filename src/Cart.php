@@ -3,7 +3,7 @@
 include_once "Item.php";
 include_once "connection.php";
 
-class Cart {
+abstract class Cart {
 
     static private $conn;
 

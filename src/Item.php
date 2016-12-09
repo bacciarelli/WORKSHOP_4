@@ -1,27 +1,5 @@
 <?php
 
-/*
-  "create table Items_Orders(
-  id int AUTO_INCREMENT NOT NULL,
-  item_id int NOT NULL,
-  order_id int NOT NULL,
-  quantity int NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(item_id) REFERENCES Items(id),
-  FOREIGN KEY(order_id) REFERENCES Orders(id))
-  ENGINE=InnoDB, CHARACTER SET=utf8"
- * 
-  "create table Items(
-  id int AUTO_INCREMENT NOT NULL,
-  item_name varchar(255) NOT NULL UNIQUE,
-  description varchar(255) NOT NULL,
-  price decimal(8, 2) NOT NULL,
-  stock_quantity int NOT NULL,
-  category_id varchar(100) NOT NULL,
-  PRIMARY KEY(id)),
-  FOREIGN KEY(category_id) REFERENCES Categories (id)
- */
-
 include_once 'connection.php';
 
 class Item {
@@ -97,16 +75,11 @@ class Item {
         return $this;
     }
 
-    //public methods
-//    public function getPriceForQuantity($quantity) {
-//        return $this->price * $quantity;
-//    }
-
     public function saveItemToDB() {
         if ($this->id == -1) {
             $statement = self::$conn->prepare
                     ("INSERT INTO Items (item_name, description, price, stock_quantity, category_id)
-                                                        VALUES (?, ?, ?. ?, ?)");
+                                                        VALUES (?, ?, ?, ?, ?)");
             if (!$statement) {
                 return false;
             }
@@ -121,7 +94,7 @@ class Item {
         }
     }
 
-    public function deleteFromDB($id) {
+    static public function deleteFromDB($id) {
         $safeId = self::$conn->real_escape_string($id);
         $sql = "DELETE FROM Items WHERE id=$safeId";
         if (self::$conn->query($sql)) {
@@ -131,15 +104,15 @@ class Item {
         }
     }
 
-    public function updateItem($itemName, $description, $price, $stockQuantity, $categoryId) {
-        $safeName = self::$conn->real_escape_string($itemName);
-        $safeDescription = self::$conn->real_escape_string($description);
-        $safePrice = self::$conn->real_escape_string($price);
-        $safeStockQuantity = self::$conn->real_escape_string($stockQuantity);
-        $safeCategoryId = self::$conn->real_escape_string($categoryId);
+    public function updateItem() {
+        $safeName = self::$conn->real_escape_string($this->itemName);
+        $safeDescription = self::$conn->real_escape_string($this->description);
+        $safePrice = self::$conn->real_escape_string($this->price);
+        $safeStockQuantity = self::$conn->real_escape_string($this->stockQuantity);
+        $safeCategoryId = self::$conn->real_escape_string($this->categoryId);
 
         $sql = "UPDATE Items SET item_name='$safeName', description='$safeDescription',
-                                    price=$safePrice, stock_quantity=$safeStockQuantity, category_id=$safeCategoryId
+                                    price='$safePrice', stock_quantity='$safeStockQuantity', category_id='$safeCategoryId'
                                     WHERE id=$this->id";
         if (self::$conn->query($sql)) {
             return true;
@@ -216,6 +189,7 @@ class Item {
                 $loadedItem->id = $row['id'];
                 $loadedItem->itemName = $row['item_name'];
                 $loadedItem->price = $row['price'];
+                $loadedItem->description = $row['description'];
                 $loadedItem->stockQuantity = $row['stock_quantity'];
                 $loadedItem->categoryId = $row['category_id'];
 
