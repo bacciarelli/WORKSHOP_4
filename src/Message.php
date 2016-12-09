@@ -5,7 +5,7 @@ include_once 'connection.php';
 class Message {
 
     static private $conn;
-    private $id;
+    private $id = -1;
     private $adminId;
     private $userId;
     private $messageText;
@@ -46,14 +46,17 @@ class Message {
 
     public function setAdminId($adminId) {
         $this->adminId = $adminId;
+        return $this;
     }
 
     public function setUserId($userId) {
         $this->userId = $userId;
+        return $this;
     }
 
     public function setMessageText($messageText) {
         $this->messageText = $messageText;
+        return $this;
     }
 
     public function setCreationDate() {
@@ -64,10 +67,12 @@ class Message {
     //metody:
 
     public function saveMessageToDB() {
-            $statement = self::$conn->prepare("INSERT INTO Messages(admin_id, user_id, messge_text, creation_date)
-                    VALUES (?, ?, ?, ?)");
+        if ($this->id == -1) {
 
+            $statement = self::$conn->prepare("INSERT INTO Messages(admin_id, user_id, message_text, creation_date) VALUES (?, ?, ?, ?)");
+            
             if (!$statement) {
+                            echo"teest";
                 return false;
             }
             $statement->bind_param('iiss', $this->adminId, $this->userId, $this->messageText, $this->creationDate);
@@ -78,6 +83,7 @@ class Message {
                 echo "Problem z zapytaniem. " . $statement->error;
                 return false;
             }
+        }
     }
 
 }

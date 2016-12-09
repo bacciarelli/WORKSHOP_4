@@ -77,9 +77,18 @@ class Order {
                 echo "Problem z zapytaniem: " . self::$conn->error;
                 return false;
             }
+        } else {
+            $sql = "UPDATE Orders SET status_id=$this->statusId WHERE id=$this->id";
+            if (self::$conn->query($sql)) {
+                $this->id = self::$conn->insert_id;
+                return true;
+            } else {
+                echo "Problem z zapytaniem: " . self::$conn->error;
+                return false;
+            }
         }
     }
-    
+
     public function deleteOrder() {
         $sql = "DELETE FROM Orders WHERE id = $this->id";
         $result = self::$conn->query($sql);
@@ -87,6 +96,17 @@ class Order {
             return true;
         }
         return false;
+    }
+
+    static public function loadOrderStatus($orderId) {
+        $sql = "SELECT Status.text FROM Orders JOIN Status ON "
+                . "Orders.status_id=Status.id WHERE Orders.id = $orderId";
+        $result = self::$conn->query($sql);
+        if ($result != false && $result->num_rows > 0) {
+            return $result;
+        } else {
+            return null;
+        }
     }
     
     static public function loadOrdersByUserId($userId) {
@@ -164,8 +184,6 @@ class Order {
         }
         return $totalPrice;
     }
-
-
 
     public function removeFromCart($itemId) {
 

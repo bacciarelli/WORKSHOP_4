@@ -20,13 +20,22 @@ require_once '../src/Order.php';
         echo '<a href="./usersList.php">Lista użytkowników</a> | ';
 
         print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
+        
+        $userEmail = User::loadUserById($_GET['userId'])->getEmail();
     } else {
         header('Location: ./panel.php');
     }
     ?>
     <h1>Panel admina!!:)</h1>
-    <h3>Lista zamówień użytkownika</h3>
+    <h3>Lista zamówień użytkownika <?=$userEmail?></h3>
     <?php
+    if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['orderId'])) {
+        if (Order::loadOrderByOrderId($_GET['orderId'])->deleteOrder() == true) {
+            print 'usunięto zamówienie<br>';
+        } else {
+            print 'nie udało się usunąć zamówienia<br>';
+        }
+    }
 
     if ($_SERVER['REQUEST_METHOD'] == "GET" && isset($_GET['userId']) &&
             Order::loadOrdersByUserId($_GET['userId']) != null) {
@@ -48,11 +57,12 @@ require_once '../src/Order.php';
             $totalPrice += $subTotal;
             print "</ol>Całkowita cena: $totalPrice<br>";
             ?>
-            <a href="./editOrder.php?orderId=<?=$order['id']?>">Edytuj zamówienie</a><br><br><hr>
+            <a href="./editOrder.php?orderId=<?= $order['id'] ?>">Edytuj zamówienie/wyślij wiadomość</a><br>
+            <a href="./userOrders.php?orderId=<?= $order['id'] ?>&userId=<?= $_GET['userId'] ?>">Usuń zamówienie</a><br><br><hr>
             <?php
         }
     } else {
-        print 'użytkownik nie ma zamówień';
+        print "użytkownik $userEmail nie ma zamówień";
     }
     ?>
 </body>
