@@ -65,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 ?>
         </div>
         <div>
-            <a href='mainPage.php'>Powrót do strony głównej<a/>
+            <a href='../index.php'>Powrót do strony głównej<a/>
         </div>
     </body>
 </html>

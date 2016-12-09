@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
 
         // kontynuacja zakupów - ustawienie ścieżki na ostatnio przeglądaną kategorię
         $categoryId = Item::loadItemById($itemId)->getCategoryId();
-        $endpoint = "mainPage.php?category_id=" . $categoryId;
+        $endpoint = "index.php?category_id=" . $categoryId;
     }
 
     if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {
@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == "GET") {
     }
 
     // jeśli nie dodano produktu do koszyka, powrót do strony głównej
-    $endpoint = "mainPage.php";
+    $endpoint = "index.php";
 }
 
 ?>
