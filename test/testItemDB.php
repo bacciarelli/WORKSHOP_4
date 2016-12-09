@@ -20,12 +20,13 @@ class testItemDB extends PHPUnit_Extensions_Database_TestCase {
                 $GLOBALS['DB_USER'],
                 $GLOBALS['DB_PASSWD']
                 );
-        return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($conn, $GLOBALS['DB_NAME']);
+        //$conn->getConnection()->query("set foreign_key_checks=0");
+        return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($conn, $GLOBALS['DB_DBNAME']);
     }
 
     protected function getDataSet() {
         
-        $dataXML = $this->createXMLDataSet($xmlFile);
+        $dataXML = $this->createXMLDataSet('DB.xml');
         return $dataXML;
     }
     
