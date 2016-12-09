@@ -48,7 +48,7 @@ class Category {
         }
     }
 
-    public function deleteFromDB($id) {
+    static public function deleteFromDB($id) {
         $safeId = self::$conn->real_escape_string($id);
         $sql = "DELETE FROM Categories WHERE id=$safeId";
         if (self::$conn->query($sql)) {
@@ -58,8 +58,8 @@ class Category {
         }
     }
 
-    public function updateCategory($text) {
-        $safeText = self::$conn->real_escape_string($text);
+    public function updateCategory() {
+        $safeText = self::$conn->real_escape_string($this->text);
 
         $sql = "UPDATE Categories SET text='$safeText' WHERE id=$this->id";
         if (self::$conn->query($sql)) {
@@ -84,6 +84,24 @@ class Category {
             }
         }
         return $ret;
+    }
+    
+    static public function loadCategoryById($id) {
+        $safeId = self::$conn->real_escape_string($id);
+        
+        $sql = "SELECT * FROM Categories WHERE id=$safeId";
+        $result = self::$conn->query($sql);
+        
+        if ($result != false && $result->num_rows == 1) {
+            $row = $result->fetch_assoc();
+            
+            $loadedCategory = new Category();
+            $loadedCategory->id = $row['id'];
+            $loadedCategory->text = $row['text'];
+            
+            return $loadedCategory;
+        }
+        return null;
     }
 
 }
