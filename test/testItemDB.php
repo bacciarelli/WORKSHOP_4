@@ -13,8 +13,25 @@ class testItemDB extends PHPUnit_Extensions_Database_TestCase {
         $this->newObject = null;
         parent::tearDown();
     }
-    
-    public function testInstanceOfObject() {
-        
+
+    protected function getConnection() {
+        $conn = new PDO(
+                $GLOBALS['DB_DSN'],
+                $GLOBALS['DB_USER'],
+                $GLOBALS['DB_PASSWD']
+                );
+        return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($conn, $GLOBALS['DB_NAME']);
     }
+
+    protected function getDataSet() {
+        
+        $dataXML = $this->createXMLDataSet($xmlFile);
+        return $dataXML;
+    }
+    
+    public function testDB() {
+        $tableNames = array('TEST_internet_shop_db');
+        $dataSet = $this->getConnection()->createDataSet();
+    }
+
 }
