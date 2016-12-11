@@ -11,9 +11,6 @@ include_once "../src/connection.php";
 if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {
     echo '<a href="./logout.php">Wyloguj się</a> | ';
     echo '<a href="./panel.php">Panel główny</a> | ';
-    echo '<a href="./usersList.php">Lista użytkowników</a> | ';
-
-    print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
 } else {
     header('Location: ./panel.php');
 }
@@ -55,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <label>Cena</label>
                 <input type="number" name="price" step="0.01"><br/>
                 <label>Ilość w magazynie</label>
-                <input type="number" name="stock_quantity"><br/>
+                <input type="number" name="stock_quantity"><br/>                
                 <label>Kategoria</label>
                 <select name="category_id">
 <?php

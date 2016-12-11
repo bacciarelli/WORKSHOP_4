@@ -81,9 +81,18 @@ require_once '../src/Message.php';
     <form action="" method="POST">
         Zmiana statusu zamówienia: <br>
         <select name="status">
-            <option value="1">nieopłacone</option>
+            <?php
+            
+            $statuses = Order::loadAllStatuses();
+            foreach ($statuses as $id => $text) {
+                echo "<option value='"
+                . $id . "'>" . $text . "</option>";
+            }
+            
+            ?>
+<!--            <option value="1">nieopłacone</option>
             <option value="2">opłacone</option>
-            <option value="3">wysłane</option>
+            <option value="3">wysłane</option>-->
         </select>
         <input type="submit" name="submit" value="Zmień status"/>
     </form>

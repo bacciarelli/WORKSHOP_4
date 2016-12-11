@@ -35,6 +35,7 @@ include_once "./src/connection.php";
     if (isset($_SESSION['userId']) && $_SESSION['login'] == true) {
         $loadedUserId = $_SESSION['userId'];
         echo '<a href="./views/logout.php">Wyloguj się</a> | ';
+        echo '<a href="./index.php">Strona główna</a> | ';
         echo '<a href="./views/userSite.php">Twoja strona</a><br>';
         print "Witaj " . User::loadUserById($_SESSION['userId'])->getFirstName();
     } else {
@@ -82,7 +83,7 @@ include_once "./src/connection.php";
             ?>
             </table>
         </div>
-        <hr/>
+   
         <div class="items">
             <table>
 

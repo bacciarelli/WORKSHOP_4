@@ -11,12 +11,11 @@ include_once "../src/connection.php";
 if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {
     echo '<a href="./logout.php">Wyloguj się</a> | ';
     echo '<a href="./panel.php">Panel główny</a> | ';
-    echo '<a href="./usersList.php">Lista użytkowników</a> | ';
-
-    print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
 } else {
     header('Location: ./panel.php');
 }
+
+echo "<br/>";
 
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if (isset($_GET['category_id']) && isset($_GET['delete'])) {

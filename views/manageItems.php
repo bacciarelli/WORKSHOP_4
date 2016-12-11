@@ -11,9 +11,6 @@ include_once "../src/connection.php";
 if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {
     echo '<a href="./logout.php">Wyloguj się</a> | ';
     echo '<a href="./panel.php">Panel główny</a> | ';
-    echo '<a href="./usersList.php">Lista użytkowników</a> | ';
-
-    print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
 } else {
     header('Location: ./panel.php');
 }
@@ -26,6 +23,7 @@ $categories = Category::loadAllCategories();
 
     </head>
     <body>
+        <hr/>
         <div class="categories">
             <?php
             foreach ($categories as $category) {
@@ -45,9 +43,10 @@ $categories = Category::loadAllCategories();
 
                     foreach ($allItems as $item) {
                         echo "<tr>";
-                        echo "<td>" . $item->getItemName() . "</td>";
-                        echo "<td>" . $item->getDescription() . "</td>";
-                        echo "<td>" . $item->getPrice() . " zł</td>";
+                        echo "<th>" . $item->getItemName() . "</th>";
+                        echo "<td style='word-wrap: normal'>" . $item->getDescription() . "</td>";
+                        echo "<th>" . $item->getPrice() . " zł</th>";
+                        echo "<td>" . $item->getStockQuantity() . "</td>";
                         echo "<td><a href='editItem.php?item_id=" . $item->getId() . "'>edytuj</a></td>";
                         echo "<td><a href='manageItems.php?item_id=" . $item->getId() . "&delete=true'>usuń</a></td>";
                         echo "</tr>";
@@ -68,9 +67,10 @@ $categories = Category::loadAllCategories();
 
                         foreach ($items as $item) {
                             echo "<tr>";
-                            echo "<td>" . $item->getItemName() . "</td>";
+                            echo "<th>" . $item->getItemName() . "</th>";
                             echo "<td>" . $item->getDescription() . "</td>";
-                            echo "<td>" . $item->getPrice() . " zł</td>";
+                            echo "<td>" . $item->getStockQuantity() . "</td>";
+                            echo "<th>" . $item->getPrice() . " zł</th>";
                             echo "<td><a href='editItem.php?item_id=" . $item->getId() . "'>edytuj</a></td>";
                             echo "<td><a href='manageItems.php?item_id=" . $item->getId() . "&delete=true'>usuń</a></td>";
                             echo "</tr>";
@@ -78,7 +78,9 @@ $categories = Category::loadAllCategories();
                     }
                 }
                 ?>
-
+                <td>
+                    
+                </td>
             </table>
         </div>
         <div>
@@ -88,12 +90,10 @@ $categories = Category::loadAllCategories();
 </html>
 
 <?php
-
 if ($_SERVER['REQUEST_METHOD'] == "GET") {
     if (isset($_GET['item_id']) && isset($_GET['delete'])) {
         Item::deleteFromDB($_GET['item_id']);
         $allItems = Item::loadAllItems();
     }
 }
-
 ?>

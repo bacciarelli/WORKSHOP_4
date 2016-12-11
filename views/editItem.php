@@ -11,14 +11,9 @@ include_once "../src/connection.php";
 if (isset($_SESSION['adminId']) && $_SESSION['login'] == true) {
     echo '<a href="./logout.php">Wyloguj się</a> | ';
     echo '<a href="./panel.php">Panel główny</a> | ';
-    echo '<a href="./usersList.php">Lista użytkowników</a> | ';
-
-    print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
 } else {
     header('Location: ./panel.php');
 }
-
-echo "<hr>";
 
 $categories = Category::loadAllCategories();
 
@@ -61,7 +56,29 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
     </head>
     <body>
+        <hr/>
         <div>
+            <div class="items">
+                <table>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == "GET") {
+    if (isset($_GET['item_id'])) {
+        $itemId = $_GET['item_id'];
+        $item = Item::loadItemById($itemId);
+
+        echo "<tr>";
+        echo "<th>" . $item->getItemName() . "</th>";
+        echo "<td>" . $item->getDescription() . "</td>";
+        echo "<td>" . $item->getPrice() . " zł</td>";
+        echo "</tr>";
+    }
+}
+?>
+
+                </table>
+            </div>
+            <hr/>
             <form action="" method="POST">
                 <label>Nazwa przedmiotu</label>
                 <input type="text" name="item_name"><br/>
@@ -73,14 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 <input type="number" name="stock_quantity"><br/>
                 <label>Kategoria</label>
                 <select name="category_id">
-                    <?php
-                    foreach ($categories as $category) {
-                        echo "<option value='"
-                        . $category->getId() . "'>"
-                        . $category->getText() .
-                        "</option>";
-                    }
-                    ?>
+<?php
+foreach ($categories as $category) {
+    echo "<option value='"
+    . $category->getId() . "'>"
+    . $category->getText() .
+    "</option>";
+}
+?>
                 </select><br/>
                 <input type="submit" name="submit" value="Aktualizuj przedmiot">
             </form>

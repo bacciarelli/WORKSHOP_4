@@ -87,6 +87,20 @@ class Order {
         }
     }
     
+    static public function loadAllStatuses() {
+        $sql = "SELECT * FROM Status";
+        $result = self::$conn->query($sql);
+        $ret = [];
+        if ($result != false && $result > 0) {
+            foreach ($result as $status) {
+                $ret[$status['id']] = $status['text'];
+            }
+            return $ret;
+        } else {
+            return null;
+        }
+    }
+    
     static public function loadOrdersByUserId($userId) {
         $safeUserId = self::$conn->real_escape_string($userId);
         $sql = "SELECT Orders.id, Status.text FROM Orders JOIN Status ON "

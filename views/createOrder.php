@@ -30,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         unset($_SESSION['total_price']);
 
         echo "Zamówienie zostało przyjęte<br/>";
-        echo "<a href='../index.php'>Powrót do strony głównej<a/>";
     }
 
     if (isset($_SESSION['cart']) && count($_SESSION['cart']) != 0) {

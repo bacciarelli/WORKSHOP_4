@@ -30,6 +30,8 @@ require_once '../src/Admin.php';
         echo '<a href="./logout.php">Wyloguj się</a> | ';
         echo '<a href="./usersList.php">Lista użytkowników</a> | ';
         echo '<a href="./ordersList.php">Lista zamowień</a> | ';
+        echo '<a href="./manageCategories.php">Lista kategorii</a> | ';
+        echo '<a href="./manageItems.php">Lista przedmiotów</a> | ';
        
         print "<br>Witaj " . Admin::loadAdminById($_SESSION['adminId'])->getAdminName();
     } else {
