@@ -90,9 +90,6 @@ require_once '../src/Message.php';
             }
             
             ?>
-<!--            <option value="1">nieopłacone</option>
-            <option value="2">opłacone</option>
-            <option value="3">wysłane</option>-->
         </select>
         <input type="submit" name="submit" value="Zmień status"/>
     </form>
