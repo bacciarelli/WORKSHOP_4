@@ -26,13 +26,12 @@ class testItemDB extends PHPUnit_Extensions_Database_TestCase {
 
     protected function getDataSet() {
         
-        $dataXML = $this->createXMLDataSet('DB.xml');
+        $dataXML = $this->createMySQLXMLDataSet('DB.xml');
         return $dataXML;
     }
     
     public function testDB() {
-        $tableNames = array('TEST_internet_shop_db');
-        $dataSet = $this->getConnection()->createDataSet();
+        $this->assertInstanceOf(Item::class, Item::loadItemById(4));
     }
 
 }
