@@ -52,7 +52,8 @@ $internetShopArraysSQL = ["create table Admins(
                         item_id int NOT NULL,
                         path varchar(255) NOT NULL,
                         PRIMARY KEY(id),
-                        FOREIGN KEY(item_id) REFERENCES Items(id))
+                        FOREIGN KEY(item_id) REFERENCES Items(id)
+                        ON DELETE CASCADE)
      ENGINE=InnoDB, CHARACTER SET=utf8"
 ,
     "create table Items_Orders(

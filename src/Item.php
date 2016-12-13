@@ -122,11 +122,11 @@ class Item {
     }
 
     static public function loadItemsByOrder($orderId) {
-        $safeCaegoryId = self::$conn->real_escape_string($orderId);
+        $safeOrderId = self::$conn->real_escape_string($orderId);
 
         $sql = "SELECT Items.item_name, Items.description, Items.price, "
                 . "Items_Orders.quantity FROM Items JOIN Items_Orders ON "
-                . "Items.id=Items_Orders.item_id WHERE order_id=$orderId";
+                . "Items.id=Items_Orders.item_id WHERE order_id=$safeOrderId";
         $result = self::$conn->query($sql);
         if ($result != false && $result->num_rows > 0) {
             return $result;
