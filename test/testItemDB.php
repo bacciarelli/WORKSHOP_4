@@ -1,9 +1,11 @@
 <?php
 
-include '../src/Item.php';
+//for any changes in src/ folder run: composer dump-autoload in console
 
 class testItemDB extends PHPUnit_Extensions_Database_TestCase {
 
+    private $item;
+    
     protected function setUp() {
         parent::setUp();
         $this->newObject = new Item();
@@ -28,7 +30,7 @@ class testItemDB extends PHPUnit_Extensions_Database_TestCase {
 
     protected function getDataSet() {
 
-        $dataXML = $this->createMySQLXMLDataSet('DB.xml');
+        $dataXML = $this->createMySQLXMLDataSet('../test/DB.xml');
         return $dataXML;
     }
 

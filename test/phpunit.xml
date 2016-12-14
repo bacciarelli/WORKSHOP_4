@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<phpunit>
+<phpunit bootstrap="../vendor/autoload.php" colors="true">
     <php>
         <var name="DB_DSN" value="mysql:dbname=TEST_internet_shop_db;host=localhost" />
         <var name="DB_USER" value="test" />
         <var name="DB_PASSWD" value="coderslab" />
         <var name="DB_DBNAME" value="TEST_internet_shop_db" />
     </php>
+    <testsuites>
+        <testsuite name="unit">
+            <directory>./</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist addUncoveredFilesFromWhitelist="true">
+            <directory suffix=".php">../src</directory>
+            <exclude>
+                <file>../src/connection.php</file>
+            </exclude>
+            <file>../src/Item.php</file>
+        </whitelist>
+    </filter>
 </phpunit>
